@@ -1,47 +1,22 @@
 package com.mb_an.tour_booking
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.mb_an.tour_booking.ui.theme.Tour_bookingTheme
+import android.app.Application
+import com.google.firebase.FirebaseApp
+import com.mb_an.tour_booking.di.appModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Tour_bookingTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+class TourBookingApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        // ✅ Init Firebase
+        FirebaseApp.initializeApp(this)
+
+        // ✅ Init Dependency Injection (Koin)
+        startKoin {
+            androidContext(this@TourBookingApp)
+            modules(appModule)
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Tour_bookingTheme {
-        Greeting("Android")
     }
 }

@@ -32,7 +32,16 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
-
+@Composable
+fun TourBookingTheme(
+    content: @Composable () -> Unit
+) {
+    MaterialTheme(
+        colorScheme = LightColorScheme, // hoặc DarkColorScheme nếu bạn setup
+        typography = Typography,
+        content = content
+    )
+}
 @Composable
 fun Tour_bookingTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
