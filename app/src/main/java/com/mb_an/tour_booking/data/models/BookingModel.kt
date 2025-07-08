@@ -8,5 +8,11 @@ data class BookingModel(
     val tourId: String = "",
     val tourTitle: String = "",
     val date: String = "",
+    val tour: TourModel = TourModel(),
+    val days: Int = 0,
+    val nights: Int = 0,
+    val quantity: Int = 0,
+    val totalPrice: Int = 0,
+    val status: String = "",
     val timestamp: Timestamp? = null
 )
