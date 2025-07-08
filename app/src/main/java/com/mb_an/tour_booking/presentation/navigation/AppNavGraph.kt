@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
@@ -21,48 +23,190 @@ import com.mb_an.tour_booking.presentation.screens.auth.RegisterScreen
 import com.mb_an.tour_booking.presentation.screens.auth.ForgotPasswordScreen
 import com.mb_an.tour_booking.presentation.screens.booking.BookingDetailScreen
 import com.mb_an.tour_booking.presentation.screens.splash.SplashScreen
+import com.mb_an.tour_booking.presentation.viewmodel.AuthViewModel
 import com.mb_an.tour_booking.presentation.viewmodel.HomeViewModel
 import com.mb_an.tour_booking.presentation.viewmodel.BookingViewModel
 
+//@Composable
+//fun AppNavGraph() {
+//    val navController = rememberNavController()
+//
+//    Scaffold(bottomBar = { BottomBar(navController) }) { innerPadding ->
+//        NavHost(
+//            navController    = navController,
+//            startDestination = Screen.Splash,
+//            modifier         = Modifier.padding(innerPadding)
+//        ) {
+//            // 1. Splash
+//            composable(Screen.Splash) {
+//                SplashScreen { isLoggedIn ->
+//                    val dest = if (isLoggedIn) BottomNavItem.Home.route else Screen.Login
+//                    navController.navigate(dest) {
+//                        popUpTo(Screen.Splash) { inclusive = true }
+//                    }
+//                }
+//            }
+//
+//            // 2. Authentication
+//            composable(Screen.Login) {
+//                LoginScreen(
+//                    onLoginSuccess = {
+//                        navController.navigate(BottomNavItem.Home.route) {
+//                            popUpTo(Screen.Login) { inclusive = true }
+//                        }
+//                    },
+//                    onNavigateToRegister = { navController.navigate(Screen.Register) },
+//                    onNavigateToForgot = { navController.navigate(Screen.Forgot) }
+//                )
+//            }
+//            composable(Screen.Register) {
+//                RegisterScreen(
+//                    onRegisterSuccess = {
+//                        navController.navigate(BottomNavItem.Home.route) {
+//                            popUpTo(Screen.Register) { inclusive = true }
+//                        }
+//                    },
+//                    onNavigateToLogin = { navController.popBackStack() }
+//                )
+//            }
+//            composable(Screen.Forgot) {
+//                ForgotPasswordScreen(onNavigateToLogin = { navController.popBackStack() })
+//            }
+//
+//            // 3. Main tabs
+//            composable(BottomNavItem.Home.route) {
+//                val homeVm: HomeViewModel = getViewModel()
+//                HomeScreen(
+//                    categories = homeVm.categories,
+//                    tours = homeVm.tourList,
+//                    onCategoryClick = { /*…*/ },
+//                    onTourClick = { tour ->
+//                        navController.navigate("${DetailScreen.Route}/${tour.id}")
+//                    }
+//                )
+//            }
+//            composable(BottomNavItem.Bookings.route) {
+//                val bookingVm: BookingViewModel = getViewModel()
+//                BookingsScreen(
+//                    bookings = bookingVm.bookingList,
+//                    onCancel = { bookingVm.cancelBooking(it) },
+//                    onViewDetail = { booking ->
+//                        navController.navigate("${DetailScreen.Route}/${booking.tour.id}")
+//                    }
+//                )
+//            }
+//            composable(BottomNavItem.Profile.route) {
+//                ProfileScreen(onLogout = {
+//                    navController.navigate(Screen.Login) { popUpTo(0) }
+//                })
+//            }
+//
+//            // 4. Chi tiết Tour (không hiển thị trong BottomBar)
+//            composable(
+//                route = "${DetailScreen.Route}/{${DetailScreen.ArgId}}",
+//                arguments = listOf(navArgument(DetailScreen.ArgId) {
+//                    type = NavType.StringType
+//                })
+//            ) { backStackEntry ->
+//
+//                // 1) Nhớ NavBackStackEntry của Home bằng remember với key NavController + route
+//                val homeEntry = remember(navController, BottomNavItem.Home.route) {
+//                    navController.getBackStackEntry(BottomNavItem.Home.route)
+//                }
+//
+//                // 2) Lấy đúng HomeViewModel đã load tours từ HomeScreen
+//                val homeVm: HomeViewModel = getViewModel(viewModelStoreOwner = homeEntry)
+//
+//                // 3) Lấy BookingViewModel bình thường
+//                val bookingVm: BookingViewModel = getViewModel()
+//
+//                // 4) Parse tourId từ args
+//                val tourId = backStackEntry.arguments?.getString(DetailScreen.ArgId).orEmpty()
+//                val tour = homeVm.tourList.firstOrNull { it.id == tourId }
+//
+//                if (tour != null) {
+//                    BookingDetailScreen(
+//                        tour = tour,
+//                        bookingState = bookingVm.bookingState,
+//                        onBook = { bookingVm.bookTour(tour) },
+//                        onBookingSuccess = { bookingVm.resetState() },
+//                        onBookingError = { bookingVm.resetState() },
+//                        onResetState = { bookingVm.resetState() }
+//                    )
+//                } else {
+//                    LaunchedEffect(Unit) {
+//                        // fallback về Home
+//                        navController.navigate(BottomNavItem.Home.route) { popUpTo(0) }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    }
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
 
+    // lấy AuthViewModel để biết có đang login hay không
+    val authVm: AuthViewModel = getViewModel()
+    val isLoggedIn by authVm.isLoggedIn.collectAsState()
+
     Scaffold(bottomBar = { BottomBar(navController) }) { innerPadding ->
         NavHost(
             navController    = navController,
-            startDestination = Screen.Splash,
+            startDestination = BottomNavItem.Home.route,     // → Bỏ Splash, vào thẳng Home
             modifier         = Modifier.padding(innerPadding)
         ) {
-            // 1. Splash
-            composable(Screen.Splash) {
-                SplashScreen { isLoggedIn ->
-                    val dest = if (isLoggedIn) BottomNavItem.Home.route else Screen.Login
-                    navController.navigate(dest) {
-                        popUpTo(Screen.Splash) { inclusive = true }
+            // 1. Home
+            composable(BottomNavItem.Home.route) {
+                val homeVm: HomeViewModel = getViewModel()
+                HomeScreen(
+                    categories      = homeVm.categories,
+                    tours           = homeVm.tourList,
+                    onCategoryClick = { /*…*/ },
+                    onTourClick     = { tour ->
+                        navController.navigate("${DetailScreen.Route}/${tour.id}")
                     }
-                }
+                )
             }
 
-            // 2. Authentication
+            // 2. Bookings
+            composable(BottomNavItem.Bookings.route) {
+                val bookingVm: BookingViewModel = getViewModel()
+                BookingsScreen(
+                    bookings     = bookingVm.bookingList,
+                    onCancel     = { bookingVm.cancelBooking(it) },
+                    onViewDetail = { booking ->
+                        navController.navigate("${DetailScreen.Route}/${booking.tour.id}")
+                    }
+                )
+            }
+
+            // 3. Profile
+            composable(BottomNavItem.Profile.route) {
+                ProfileScreen(onLogout = {
+                    authVm.logout()
+                    // sau logout, quay về Home (đã là startDestination)
+                    navController.navigate(BottomNavItem.Home.route) {
+                        popUpTo(0)
+                    }
+                })
+            }
+
+            // 4. Login / Register / Forgot (chỉ mở khi cần)
             composable(Screen.Login) {
                 LoginScreen(
-                    onLoginSuccess = {
-                        navController.navigate(BottomNavItem.Home.route) {
-                            popUpTo(Screen.Login) { inclusive = true }
-                        }
+                    onLoginSuccess       = {
+                        // quay về DetailScreen vừa truy cập (nếu có) hoặc Home
+                        navController.popBackStack()
                     },
                     onNavigateToRegister = { navController.navigate(Screen.Register) },
-                    onNavigateToForgot = { navController.navigate(Screen.Forgot) }
+                    onNavigateToForgot   = { navController.navigate(Screen.Forgot) }
                 )
             }
             composable(Screen.Register) {
                 RegisterScreen(
-                    onRegisterSuccess = {
-                        navController.navigate(BottomNavItem.Home.route) {
-                            popUpTo(Screen.Register) { inclusive = true }
-                        }
-                    },
+                    onRegisterSuccess = { navController.popBackStack() },
                     onNavigateToLogin = { navController.popBackStack() }
                 )
             }
@@ -70,70 +214,55 @@ fun AppNavGraph() {
                 ForgotPasswordScreen(onNavigateToLogin = { navController.popBackStack() })
             }
 
-            // 3. Main tabs
-            composable(BottomNavItem.Home.route) {
-                val homeVm: HomeViewModel = getViewModel()
-                HomeScreen(
-                    categories = homeVm.categories,
-                    tours = homeVm.tourList,
-                    onCategoryClick = { /*…*/ },
-                    onTourClick = { tour ->
-                        navController.navigate("${DetailScreen.Route}/${tour.id}")
-                    }
-                )
-            }
-            composable(BottomNavItem.Bookings.route) {
-                val bookingVm: BookingViewModel = getViewModel()
-                BookingsScreen(
-                    bookings = bookingVm.bookingList,
-                    onCancel = { bookingVm.cancelBooking(it) }
-                )
-            }
-            composable(BottomNavItem.Profile.route) {
-                ProfileScreen(onLogout = {
-                    navController.navigate(Screen.Login) { popUpTo(0) }
-                })
-            }
-
-            // 4. Chi tiết Tour (không hiển thị trong BottomBar)
+            // 5. DetailScreen (chỉ show khi bấm tour)
             composable(
-                route = "${DetailScreen.Route}/{${DetailScreen.ArgId}}",
+                route     = "${DetailScreen.Route}/{${DetailScreen.ArgId}}",
                 arguments = listOf(navArgument(DetailScreen.ArgId) {
                     type = NavType.StringType
                 })
             ) { backStackEntry ->
-
-                // 1) Nhớ NavBackStackEntry của Home bằng remember với key NavController + route
-                val homeEntry = remember(navController, BottomNavItem.Home.route) {
+                // reuse HomeViewModel
+                val homeEntry = remember(navController) {
                     navController.getBackStackEntry(BottomNavItem.Home.route)
                 }
-
-                // 2) Lấy đúng HomeViewModel đã load tours từ HomeScreen
-                val homeVm: HomeViewModel = getViewModel(viewModelStoreOwner = homeEntry)
-
-                // 3) Lấy BookingViewModel bình thường
+                val homeVm: HomeViewModel       = getViewModel(viewModelStoreOwner = homeEntry)
                 val bookingVm: BookingViewModel = getViewModel()
 
-                // 4) Parse tourId từ args
                 val tourId = backStackEntry.arguments?.getString(DetailScreen.ArgId).orEmpty()
-                val tour = homeVm.tourList.firstOrNull { it.id == tourId }
+                val tour   = homeVm.tourList.firstOrNull { it.id == tourId }
 
                 if (tour != null) {
                     BookingDetailScreen(
-                        tour = tour,
-                        bookingState = bookingVm.bookingState,
-                        onBook = { bookingVm.bookTour(tour) },
-                        onBookingSuccess = { bookingVm.resetState() },
-                        onBookingError = { bookingVm.resetState() },
-                        onResetState = { bookingVm.resetState() }
+                        tour             = tour,
+                        bookingState     = bookingVm.bookingState,
+
+                        // → Tại đây chỉ mới check login và điều hướng vào Login
+                        onBook = {
+                            if (!isLoggedIn) {
+                                navController.navigate(Screen.Login)
+                            } else {
+                                bookingVm.bookTour(tour)
+                            }
+                        },
+
+                        onBookingSuccess = {
+                            bookingVm.resetState()
+                            navController.navigate(BottomNavItem.Bookings.route) {
+                                launchSingleTop = true
+                            }
+                        },
+                        onBookingError   = { bookingVm.resetState() },
+                        onResetState     = { bookingVm.resetState() }
                     )
                 } else {
+                    // nếu không tìm thấy tour thì về Home
                     LaunchedEffect(Unit) {
-                        // fallback về Home
-                        navController.navigate(BottomNavItem.Home.route) { popUpTo(0) }
+                        navController.navigate(BottomNavItem.Home.route) {
+                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        }
                     }
                 }
             }
         }
     }
-    }
+}
