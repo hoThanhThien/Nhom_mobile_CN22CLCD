@@ -18,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -161,36 +160,26 @@ fun TourListItem(tour: TourModel, onClick: (TourModel)->Unit) = Card(
         .fillMaxWidth()
         .clickable { onClick(tour) },
     shape = RoundedCornerShape(12.dp),
-    elevation = CardDefaults.cardElevation(4.dp)
+    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
 ) {
-    Row(Modifier.padding(8.dp)) {
+    Row {
         AsyncImage(
             model = tour.imageUrl,
             contentDescription = tour.title,
             modifier = Modifier
                 .size(100.dp)
-                .clip(RoundedCornerShape(8.dp)),
+                .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)),
             contentScale = ContentScale.Crop
         )
         Spacer(Modifier.width(12.dp))
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .padding(12.dp)
                 .align(Alignment.CenterVertically)
         ) {
             Text(tour.title, style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(4.dp))
             Text(tour.location, style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(4.dp))
-            // ★★★★★ + số rating
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                repeat(5) { idx ->
-                    val tint = if (idx < tour.rating.toInt()) Color(0xFFFFD700) else Color.LightGray
-                    Icon(Icons.Filled.Star, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
-                }
-                Spacer(Modifier.width(4.dp))
-                Text(String.format("%.1f", tour.rating), style = MaterialTheme.typography.bodySmall)
-            }
             Spacer(Modifier.height(4.dp))
             Text("${tour.price}₫", fontWeight = FontWeight.Bold)
         }
