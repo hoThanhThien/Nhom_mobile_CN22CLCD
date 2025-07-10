@@ -9,6 +9,7 @@ import com.mb_an.tour_booking.data.models.TourModel
 import com.mb_an.tour_booking.data.repository.AuthRepository
 import com.mb_an.tour_booking.data.repository.BookingRepository
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class BookingViewModel(
     private val repository: BookingRepository,
@@ -36,15 +37,26 @@ class BookingViewModel(
     }
 
     /** Đặt tour mới */
-    fun bookTour(tour: TourModel) {
+    fun bookTour(
+        tour: TourModel,
+        startDate: LocalDate,
+        endDate: LocalDate,
+        guests: Int) {
         val userId = authRepository.getCurrentUserId()
         if (userId == null) {
             bookingState = BookingState.Error("Chưa đăng nhập")
             return
         }
         bookingState = BookingState.Loading
-        repository.bookTour(tour, userId) { success ->
-            bookingState = if (success) BookingState.Success else BookingState.Error("Đặt tour thất bại")
+        repository.bookTour(
+            tour = tour,
+            userId = userId,
+            startDate = startDate,
+            endDate = endDate,
+            guests = guests
+        ) { success ->
+            bookingState = if (success) BookingState.Success
+            else BookingState.Error("Đặt tour thất bại")
             if (success) loadBookings()
         }
     }
@@ -62,6 +74,7 @@ class BookingViewModel(
     fun resetState() {
         bookingState = BookingState.Idle
     }
+
 }
 
 sealed class BookingState {

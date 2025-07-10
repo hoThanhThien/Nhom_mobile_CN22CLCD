@@ -8,7 +8,8 @@ data class TourModel(
     val price: Int = 0,
     val imageUrl: String = "",
     val description: String = "",
-    val rating: Double = 0.0
+    val rating: Double = 0.0,
+    val images: List<String>
 )
 
 

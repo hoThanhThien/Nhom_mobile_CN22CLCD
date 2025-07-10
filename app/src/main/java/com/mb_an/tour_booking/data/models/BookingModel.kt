@@ -14,5 +14,6 @@ data class BookingModel(
     val quantity: Int = 0,
     val totalPrice: Int = 0,
     val status: String = "",
-    val timestamp: Timestamp? = null
+    val timestamp: Timestamp? = null,
+
 )
