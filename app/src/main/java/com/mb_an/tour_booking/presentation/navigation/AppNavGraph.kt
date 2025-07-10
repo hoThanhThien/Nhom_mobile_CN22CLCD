@@ -1,6 +1,8 @@
 // app/src/main/java/com/mb_an/tour_booking/presentation/navigation/AppNavGraph.kt
 package com.mb_an.tour_booking.presentation.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -143,6 +145,7 @@ import com.mb_an.tour_booking.presentation.viewmodel.BookingViewModel
 //        }
 //    }
 //    }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
@@ -233,26 +236,35 @@ fun AppNavGraph() {
 
                 if (tour != null) {
                     BookingDetailScreen(
-                        tour             = tour,
-                        bookingState     = bookingVm.bookingState,
+                        tour          = tour,
+                        bookingState  = bookingVm.bookingState,
 
-                        // → Tại đây chỉ mới check login và điều hướng vào Login
-                        onBook = {
+                        // onBook giờ phải nhận 3 tham số
+                        onBook = { startDate, endDate, guests ->
                             if (!isLoggedIn) {
                                 navController.navigate(Screen.Login)
                             } else {
-                                bookingVm.bookTour(tour)
+                                // gọi use-case bookTour với start/end/guests
+                                bookingVm.bookTour(tour, startDate, endDate, guests)
                             }
                         },
 
                         onBookingSuccess = {
                             bookingVm.resetState()
+                            // ví dụ: về tab Bookings sau khi đặt thành công
                             navController.navigate(BottomNavItem.Bookings.route) {
                                 launchSingleTop = true
                             }
                         },
-                        onBookingError   = { bookingVm.resetState() },
-                        onResetState     = { bookingVm.resetState() }
+
+                        onBookingError = { errorMsg ->
+                            bookingVm.resetState()
+                            // TODO: show Snackbar hoặc Toast với errorMsg
+                        },
+
+                        onResetState = {
+                            bookingVm.resetState()
+                        }
                     )
                 } else {
                     // nếu không tìm thấy tour thì về Home

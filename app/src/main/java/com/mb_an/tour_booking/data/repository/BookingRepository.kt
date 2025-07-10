@@ -5,6 +5,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.mb_an.tour_booking.data.models.BookingModel
 import com.mb_an.tour_booking.data.models.TourModel
 import com.google.firebase.firestore.FieldValue
+import java.time.LocalDate
 
 class BookingRepository {
 
@@ -15,12 +16,18 @@ class BookingRepository {
     fun bookTour(
         tour: TourModel,
         userId: String,
-        onResult: (Boolean) -> Unit
+        startDate: LocalDate,
+        endDate: LocalDate,
+        guests: Int,
+        onResult: (Boolean)->Unit
     ) {
         val bookingData = hashMapOf(
             "userId"    to userId,
             "tourId"    to tour.id,
             "tourTitle" to tour.title,
+            "startDate" to startDate.toString(),
+            "endDate"   to endDate.toString(),
+            "guests"    to guests,
             "date"      to tour.date,
             "timestamp" to FieldValue.serverTimestamp()
         )

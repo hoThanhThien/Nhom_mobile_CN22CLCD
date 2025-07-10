@@ -102,7 +102,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                placeholder = { Text("email@domain.com") },
+                placeholder = { Text("BookingApp@gmail.com") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -138,7 +138,12 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
-                enabled = !loading
+                enabled = !loading,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor   = Color.White
+                )
+
             ) {
                 Text("Continue")
             }
@@ -167,7 +172,10 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
-                border = ButtonDefaults.outlinedButtonBorder
+                border = ButtonDefaults.outlinedButtonBorder,
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = Color.Black
+                )
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_google_logo),
@@ -182,12 +190,15 @@ fun LoginScreen(
 
             // Apple Sign-In button (nếu bạn có)
             OutlinedButton(
-                onClick = { /* TODO: Apple Sign-In */ },
+                onClick = { },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
-                border = ButtonDefaults.outlinedButtonBorder
+                border = ButtonDefaults.outlinedButtonBorder,
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = Color.Black
+                )
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_apple_logo),
@@ -200,12 +211,21 @@ fun LoginScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            TextButton(onClick = onNavigateToRegister) {
+            TextButton(onClick = onNavigateToRegister,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = Color.Black
+                )) {
+
                 Text("Chưa có tài khoản? Đăng ký")
+
             }
-            TextButton(onClick = onNavigateToForgot) {
+            TextButton(onClick = onNavigateToForgot,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = Color.Black
+                )) {
                 Text("Quên mật khẩu?")
             }
+
 
             errorMsg?.let { msg ->
                 Spacer(Modifier.height(12.dp))
