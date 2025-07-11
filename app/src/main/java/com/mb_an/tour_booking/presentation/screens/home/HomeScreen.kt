@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +27,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.mb_an.tour_booking.data.models.TourModel
 import com.mb_an.tour_booking.data.models.CategoryModel
-
+import com.mb_an.tour_booking.presentation.viewmodel.HomeViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 // Data class cho Category (nếu vẫn dùng)
 
 
@@ -36,8 +38,18 @@ fun HomeScreen(
     categories: List<CategoryModel>,
     tours:      List<TourModel>,
     onCategoryClick: (CategoryModel) -> Unit,
-    onTourClick:     (TourModel)   -> Unit
+    onTourClick:     (TourModel)   -> Unit,
+
 ) {
+    // State tìm kiếm
+    var query by remember { mutableStateOf("") }
+    // Filtered list
+    val filteredTours = remember(query, tours) {
+        if (query.isBlank()) tours
+        else tours.filter {
+            it.title.contains(query.trim(), ignoreCase = true)
+        }
+    }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -45,16 +57,16 @@ fun HomeScreen(
     ) {
         // 1. Search + Banner
         item {
-            var query by remember { mutableStateOf("") }
+            // Trạng thái cho truy vấn tìm kiếm
             OutlinedTextField(
                 value = query,
-                onValueChange = { query = it },
-                placeholder = { Text("Tìm kiếm") },
-                leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
-                modifier = Modifier
+                onValueChange = { query = it },           // ← cập nhật local state
+                placeholder   = { Text("Tìm kiếm tour...") },
+                leadingIcon   = { Icon(Icons.Outlined.Search, contentDescription = null) },
+                modifier      = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = RoundedCornerShape(28.dp)
+                shape         = RoundedCornerShape(28.dp)
             )
             Spacer(Modifier.height(16.dp))
             AsyncImage(
@@ -98,7 +110,7 @@ fun HomeScreen(
             SectionHeader("Yêu thích")
             Spacer(Modifier.height(8.dp))
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                items(tours) { tour ->
+                items(filteredTours) { tour ->
                     FavoriteCard(tour, onTourClick)
                 }
             }
@@ -106,7 +118,7 @@ fun HomeScreen(
 
         // 4. Tất cả tour (All Tours)
         item { SectionHeader("Tất cả tour") }
-        items(tours) { tour ->
+        items(filteredTours) { tour ->
             TourListItem(tour, onTourClick)
         }
     }
@@ -148,7 +160,7 @@ fun FavoriteCard(tour: TourModel, onClick: (TourModel)->Unit) = Card(
         Column(Modifier.padding(8.dp)) {
             Text(tour.title, style = MaterialTheme.typography.titleSmall)
             Spacer(Modifier.height(4.dp))
-            Text("${tour.price}₫", fontWeight = FontWeight.Bold)
+            Text("${tour.price}₫", fontWeight = FontWeight.Bold, color = Color.Red)
         }
     }
 }
@@ -181,7 +193,18 @@ fun TourListItem(tour: TourModel, onClick: (TourModel)->Unit) = Card(
             Spacer(Modifier.height(4.dp))
             Text(tour.location, style = MaterialTheme.typography.bodyMedium)
             Spacer(Modifier.height(4.dp))
-            Text("${tour.price}₫", fontWeight = FontWeight.Bold)
+            //price
+            Text("${tour.price}₫", fontWeight = FontWeight.Bold, color = Color.Red)
+            //rating
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                repeat(5) { idx ->
+                    val tint = if (idx < tour.rating.toInt()) Color(0xFFFFD700) else Color.LightGray
+                    Icon(Icons.Filled.Star, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
+                }
+                Spacer(Modifier.width(4.dp))
+                Text(String.format("%.1f", tour.rating), style = MaterialTheme.typography.bodySmall)
+            }
+            Spacer(Modifier.height(4.dp))
         }
     }
 }
