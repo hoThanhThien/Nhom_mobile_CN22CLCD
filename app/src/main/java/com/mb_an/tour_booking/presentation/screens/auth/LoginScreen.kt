@@ -24,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.mb_an.tour_booking.R
+import com.mb_an.tour_booking.data.repository.GoogleSignInRepository
 
 
 @Composable
@@ -40,10 +41,10 @@ fun LoginScreen(
 
     // Context và Activity để khởi chạy Google Sign-In
     val context = LocalContext.current
-    val activity = context as? Activity
-
+    val activity = context as Activity
+    val repo = remember { GoogleSignInRepository(activity) }
     // 1) Tạo launcher cho Google Sign-In
-    val googleLauncher = rememberLauncherForActivityResult(
+    val launcher  = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -66,12 +67,6 @@ fun LoginScreen(
         }
     }
 
-    // 2) Cấu hình GoogleSignInClient
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(context.getString(R.string.default_web_client_id))
-        .requestEmail()
-        .build()
-    val googleClient = activity?.let { GoogleSignIn.getClient(it, gso) }
 
     Scaffold { padding ->
         Column(
@@ -164,8 +159,9 @@ fun LoginScreen(
             // Google Sign-In button
             OutlinedButton(
                 onClick = {
-                    googleClient?.signInIntent?.let { intent ->
-                        googleLauncher.launch(intent)
+                    // signOut trước sẽ buộc show chooser
+                    repo.signOut {
+                        launcher.launch(repo.getGoogleSignInClient().signInIntent)
                     }
                 },
                 modifier = Modifier
