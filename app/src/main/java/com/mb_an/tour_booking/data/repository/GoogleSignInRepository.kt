@@ -13,7 +13,8 @@ class GoogleSignInRepository(private val activity: Activity) {
 
     fun getGoogleSignInClient(): GoogleSignInClient {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("AIzaSyAfOK7KF-mf5Jsu8iYktrj43QElbjchPQQ")
+//            .requestIdToken("AIzaSyAfOK7KF-mf5Jsu8iYktrj43QElbjchPQQ")
+            .requestIdToken(activity.getString(R.string.default_web_client_id))
             // ✅ lấy từ google-services.json
             .requestEmail()
             .build()
