@@ -12,11 +12,18 @@ class HomeViewModel(
     private val tourRepo: TourRepository,
     private val catRepo:  CategoryRepository
 ) : ViewModel() {
-
+    //Querry
+    var query by mutableStateOf("")
+        private set
     // Tours
     var tourList by mutableStateOf<List<TourModel>>(emptyList())
         private set
-
+    //Danh sách tour đã lọc
+    val filteredTours: List<TourModel>
+        get() = if (query.isBlank()) tourList
+        else tourList.filter {
+            it.title.contains(query, ignoreCase = true)
+        }
     // Categories
     var categories by mutableStateOf<List<CategoryModel>>(emptyList())
         private set
@@ -45,5 +52,12 @@ class HomeViewModel(
         catRepo.fetchCategories { cats ->
             categories = cats
         }
+
+
+
+    }
+    //Update querry khi người dùng đánh từ khóa**
+    fun onQueryChanged(newQuery: String) {
+        query = newQuery
     }
 }

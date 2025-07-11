@@ -24,19 +24,17 @@ class TourRepository {
 fun fetchTours(onResult: (List<TourModel>) -> Unit) {
     tourCollection.get()
         .addOnSuccessListener { snapshot ->
-            // mapNotNull phải trả về TourModel? cho mỗi document
             val tours = snapshot.documents.mapNotNull { doc ->
-                // Chuyển document về TourModel, nếu null thì bỏ qua
-                doc.toObject(TourModel::class.java)?.also { model ->
-                    Log.d("TourRepository", "Loaded tour: id=${model.id}, title=${model.title}")
-                }
+                // 1) parse -> 2) gán id -> 3) trả về
+                doc.toObject(TourModel::class.java)
+                    ?.apply { id = doc.id }      // ← tuyệt đối không được bỏ dòng này
             }
-            Log.d("TourRepository", "Total tours fetched: ${tours.size}")
             onResult(tours)
         }
-        .addOnFailureListener { e ->
-            Log.e("TourRepository", "Error fetching tours", e)
+        .addOnFailureListener {
             onResult(emptyList())
         }
 }
+
 }
+
