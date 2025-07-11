@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">tour_booking</string>
-    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
+    <string name="default_web_client_id">1:103680029575:android:211f48f9c04a8ac9ac5922</string>
     <string name="google_maps_key">YOUR_ACTUAL_API_KEY</string>
 </resources>
