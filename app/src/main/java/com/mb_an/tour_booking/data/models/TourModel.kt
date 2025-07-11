@@ -1,7 +1,7 @@
 package com.mb_an.tour_booking.data.models
 
 data class TourModel(
-    val id: String = "",
+    var id: String = "",
     val title: String = "",
     val date: String = "",
     val location: String = "",
@@ -9,7 +9,13 @@ data class TourModel(
     val imageUrl: String = "",
     val description: String = "",
     val rating: Double = 0.0,
-    val images: List<String>
+    val images: List<String> = emptyList(),
+    val reviewCount: Int      = 0
 )
+{
+    // helper trả về list ảnh để slider dùng
+    fun getImageList(): List<String> =
+        if (images.isEmpty()) listOf(imageUrl) else images
+}
 
 

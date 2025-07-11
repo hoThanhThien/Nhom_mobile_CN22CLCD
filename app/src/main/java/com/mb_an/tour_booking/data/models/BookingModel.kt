@@ -3,7 +3,7 @@ package com.mb_an.tour_booking.data.models
 import com.google.firebase.Timestamp
 
 data class BookingModel(
-    val id: String = "",
+    var id: String = "",
     val userId: String = "",
     val tourId: String = "",
     val tourTitle: String = "",
@@ -15,5 +15,5 @@ data class BookingModel(
     val totalPrice: Int = 0,
     val status: String = "",
     val timestamp: Timestamp? = null,
-
 )
+
