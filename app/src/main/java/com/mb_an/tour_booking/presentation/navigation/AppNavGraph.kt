@@ -38,6 +38,7 @@ fun AppNavGraph() {
     // lấy AuthViewModel để biết có đang login hay không
     val authVm: AuthViewModel = getViewModel()
     val isLoggedIn by authVm.isLoggedIn.collectAsState()
+    val userEmail by authVm.userEmail.collectAsState(initial = "")
 
     Scaffold(bottomBar = { BottomBar(navController) }) { innerPadding ->
         NavHost(
@@ -84,13 +85,21 @@ fun AppNavGraph() {
             }
             // 3. Profile
             composable(BottomNavItem.Profile.route) {
-                ProfileScreen(onLogout = {
-                    authVm.logout()
-                    // sau logout, quay về Home (đã là startDestination)
-                    navController.navigate(BottomNavItem.Home.route) {
-                        popUpTo(0)
+                ProfileScreen(
+                    isLoggedIn = isLoggedIn,
+                    email      = userEmail,
+                    onLogin    = {
+                        // chuyển sang màn Login
+                        navController.navigate(Screen.Login)
+                    },
+                    onLogout   = {
+                        authVm.logout()
+                        // trở về Home sau khi logout
+                        navController.navigate(BottomNavItem.Home.route) {
+                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        }
                     }
-                })
+                )
             }
 
             // 4. Login / Register / Forgot (chỉ mở khi cần)

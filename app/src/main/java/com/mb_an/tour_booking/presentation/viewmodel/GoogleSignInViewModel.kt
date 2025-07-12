@@ -27,7 +27,7 @@ class GoogleSignInViewModel(private val repository: GoogleSignInRepository) : Vi
     fun resetState() {
         googleSignInState = GoogleSignInState.Idle
     }
-//    val googleRepo GoogleSignInRepository = get { parametersOf(activity) }:
+
 }
 
 sealed class GoogleSignInState {

@@ -1,15 +1,14 @@
-// app/src/main/java/com/mb_an/tour_booking/presentation/viewmodel/BookingViewModel.kt
+
 package com.mb_an.tour_booking.presentation.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.mb_an.tour_booking.data.models.BookingModel
 import com.mb_an.tour_booking.data.models.TourModel
 import com.mb_an.tour_booking.data.repository.AuthRepository
 import com.mb_an.tour_booking.data.repository.BookingRepository
-import kotlinx.coroutines.launch
+
 import java.time.LocalDate
 
 class BookingViewModel(
@@ -25,9 +24,6 @@ class BookingViewModel(
     var bookingState by mutableStateOf<BookingState>(BookingState.Idle)
         private set
 
-//    init {
-//        loadBookings()
-//    }
 
     /** Nạp lại danh sách booking */
     fun loadBookings() {
