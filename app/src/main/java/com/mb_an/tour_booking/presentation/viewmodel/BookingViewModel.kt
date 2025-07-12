@@ -16,7 +16,14 @@ class BookingViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-   
+    // 1. Danh sách booking của user
+    var bookingList by mutableStateOf<List<BookingModel>>(emptyList())
+        private set
+
+    // 2. Trạng thái hành động (đặt/hủy)
+    var bookingState by mutableStateOf<BookingState>(BookingState.Idle)
+        private set
+
 
     /** Nạp lại danh sách booking */
     fun loadBookings() {
