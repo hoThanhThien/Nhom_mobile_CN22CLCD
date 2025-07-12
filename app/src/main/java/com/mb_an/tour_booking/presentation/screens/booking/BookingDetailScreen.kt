@@ -305,35 +305,7 @@ fun BookingDetailScreen(
                     }
                 }
             }
-            // 3.5. QR Payment Image
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(4.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Quét mã QR để thanh toán",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = com.mb_an.tour_booking.R.drawable.qr_code),
-                        contentDescription = "Mã QR thanh toán",
-                        modifier = Modifier
-                            .size(300.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.Fit
-                    )
-                }
-            }
+
 
             // 4. Summary
             if (nights > 0) {
