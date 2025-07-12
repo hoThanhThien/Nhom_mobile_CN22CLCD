@@ -13,7 +13,7 @@ class GoogleSignInRepository(private val activity: Activity) {
 
     // 1) Tạo GoogleSignInClient duy nhất
     private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        // DÙNG OAuth web client ID, không phải API key
+        // DÙNG OAuth web client ID
         .requestIdToken(activity.getString(R.string.default_web_client_id))
         .requestEmail()
         .build()

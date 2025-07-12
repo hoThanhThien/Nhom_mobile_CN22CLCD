@@ -59,7 +59,8 @@ fun BookingDetailScreen(
     onBook: (LocalDate, LocalDate, Int) -> Unit,
     onBookingSuccess: () -> Unit,
     onBookingError: (String) -> Unit,
-    onResetState: () -> Unit
+    onResetState: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val context = LocalContext.current
     val dateState = rememberDateRangePickerState()
@@ -89,7 +90,7 @@ fun BookingDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onResetState) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             imageVector   = Icons.Filled.ArrowBack,
                             contentDescription = "Quay lại"

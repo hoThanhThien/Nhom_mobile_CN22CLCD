@@ -88,9 +88,11 @@ fun AppNavGraph() {
             }
             // 3. Profile
             composable(BottomNavItem.Profile.route) {
+                val currentUser by authVm.currentUser.collectAsState()
                 ProfileScreen(
                     isLoggedIn = isLoggedIn,
                     email      = userEmail,
+                    avatarUrl = currentUser?.photoUrl?.toString().orEmpty(),
                     onLogin    = {
                         // chuyển sang màn Login
                         navController.navigate(Screen.Login)
@@ -147,6 +149,13 @@ fun AppNavGraph() {
                     BookingDetailScreen(
                         tour          = tour,
                         bookingState  = bookingVm.bookingState,
+                        //back ve home
+                        onBack = {
+                            navController.navigate(BottomNavItem.Home.route) {
+                                popUpTo(BottomNavItem.Home.route) { inclusive = true }
+                            }
+                        },
+
 
                         // onBook giờ phải nhận 3 tham số
                         onBook = { startDate, endDate, guests ->

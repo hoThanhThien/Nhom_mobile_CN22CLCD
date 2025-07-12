@@ -47,11 +47,11 @@ class BookingRepository {
         bookingRef
             .add(bookingData)
             .addOnSuccessListener {
-                Log.d("BookingRepo", "✅ bookTour success")
+                Log.d("BookingRepo", "bookTour success")
                 onResult(true)
             }
             .addOnFailureListener { e ->
-                Log.e("BookingRepo", "❌ bookTour failed", e)
+                Log.e("BookingRepo", "bookTour failed", e)
                 onResult(false)
             }
     }
