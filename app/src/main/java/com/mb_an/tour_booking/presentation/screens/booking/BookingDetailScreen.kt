@@ -2,6 +2,7 @@
 package com.mb_an.tour_booking.presentation.screens.booking
 import com.mb_an.tour_booking.data.models.TourModel
 import com.mb_an.tour_booking.presentation.viewmodel.BookingState
+import androidx.compose.ui.res.painterResource
 
 import android.os.Build
 
@@ -40,7 +41,9 @@ import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -306,6 +309,7 @@ fun BookingDetailScreen(
                     }
                 }
             }
+
 
             // 4. Summary
             if (nights > 0) {
