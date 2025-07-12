@@ -1,7 +1,9 @@
 
 package com.mb_an.tour_booking.presentation.viewmodel
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.mb_an.tour_booking.data.models.BookingModel
@@ -36,16 +38,19 @@ class BookingViewModel(
     }
 
     /** Đặt tour mới */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun bookTour(
         tour: TourModel,
         startDate: LocalDate,
         endDate: LocalDate,
         guests: Int) {
+        // 1) Kiểm tra login, nếu chưa login set error và return
         val userId = authRepository.getCurrentUserId()
         if (userId == null) {
             bookingState = BookingState.Error("Chưa đăng nhập")
             return
         }
+        // 2) Đánh dấu đang loading
         bookingState = BookingState.Loading
         repository.bookTour(
             tour = tour,
@@ -54,6 +59,7 @@ class BookingViewModel(
             endDate = endDate,
             guests = guests
         ) { success ->
+            // 4)  cập nhật bookingState
             bookingState = if (success) BookingState.Success
             else BookingState.Error("Đặt tour thất bại")
             if (success) loadBookings()

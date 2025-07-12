@@ -24,6 +24,7 @@ class AuthRepository {
     ) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener { onResult(it.user, null) }
+            // Khi tạo tài khoản thành công, authResult.user chứa FirebaseUser mới
             .addOnFailureListener { e -> onResult(null, e.localizedMessage) }
     }
 

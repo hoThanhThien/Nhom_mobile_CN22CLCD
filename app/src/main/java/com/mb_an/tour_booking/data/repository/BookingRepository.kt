@@ -1,6 +1,8 @@
 package com.mb_an.tour_booking.data.repository
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.mb_an.tour_booking.data.models.BookingModel
@@ -15,6 +17,7 @@ class BookingRepository {
     private val bookingRef = firestore.collection("bookings")
 
     /** Tạo 1 booking mới */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun bookTour(
         tour: TourModel,
         userId: String,
@@ -35,7 +38,7 @@ class BookingRepository {
             "tourTitle"  to tour.title,
             "date"       to dateRange,              // giữ nguyên key "date"
             "timestamp"  to FieldValue.serverTimestamp(),
-            "tour"       to tour,                    // ← embed nguyên TourModel
+
             // bổ sung:
             "tour"       to tour,                   // embed TourModel
             "nights"     to nights,
@@ -64,7 +67,6 @@ class BookingRepository {
         Log.d("BookingRepo", "fetchUserBookings() for userId=$userId")
         bookingRef
             .whereEqualTo("userId", userId)
-//
             .get()
             .addOnSuccessListener { snap: QuerySnapshot ->
                 Log.d("BookingRepo", "  got ${snap.size()} docs")

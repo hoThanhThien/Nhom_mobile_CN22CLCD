@@ -15,8 +15,8 @@ fun fetchTours(onResult: (List<TourModel>) -> Unit) {
         .addOnSuccessListener { snapshot ->
             val tours = snapshot.documents.mapNotNull { doc ->
                 // 1) parse -> 2) gán id -> 3) trả về
-                doc.toObject(TourModel::class.java)
-                    ?.apply { id = doc.id }      // ← tuyệt đối không được bỏ dòng này
+                doc.toObject(TourModel::class.java) //JSON → TourModel?
+                    ?.apply { id = doc.id } //gán doc.id vào model.id
             }
             onResult(tours)
         }
