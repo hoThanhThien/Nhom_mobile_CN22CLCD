@@ -3,10 +3,12 @@ package com.mb_an.tour_booking.presentation.screens.profile
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material3.TopAppBarDefaults.centerAlignedTopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 
@@ -20,43 +22,60 @@ fun ProfileScreen(
     onLogout:   () -> Unit
 ) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Tài khoản") }) }
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Tài khoản",
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                },
+                actions = {
+                    if (isLoggedIn) {
+                        TextButton(
+                            onClick = onLogout,
+                            colors = ButtonDefaults.textButtonColors(contentColor = Color.Red)
+                        ) {
+                            Text("Đăng xuất")
+                        }
+                    } else {
+                        TextButton(onClick = onLogin) {
+                            Text("Đăng nhập")
+                        }
+                    }
+                },
+                colors = centerAlignedTopAppBarColors(
+                    containerColor     = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor  = MaterialTheme.colorScheme.onPrimaryContainer,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement   = Arrangement.Center,
+            horizontalAlignment   = Alignment.CenterHorizontally
         ) {
-            if (!isLoggedIn) {
-                // Chưa đăng nhập → chỉ hiện nút "Đăng nhập"
-                Text("Bạn chưa đăng nhập", style = MaterialTheme.typography.bodyLarge)
-                Spacer(Modifier.height(24.dp))
-                Button(
-                    onClick = onLogin,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(24.dp)
-                ) {
-                    Text("Đăng nhập")
-                }
+            if (isLoggedIn) {
+                Text(
+                    text = "Email của bạn:",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = email,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+                )
             } else {
-                // Đã đăng nhập → hiện email và nút "Đăng xuất"
-                Text("Email: $email", style = MaterialTheme.typography.bodyLarge)
-                Spacer(Modifier.height(24.dp))
-                Button(
-                    onClick = onLogout,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                ) {
-                    Text("Đăng xuất", color = Color.White)
-                }
+                Text(
+                    text = "Bạn chưa đăng nhập",
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
-    }}
+    }
+}

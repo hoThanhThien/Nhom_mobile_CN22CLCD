@@ -79,8 +79,8 @@ fun BookingDetailScreen(
                     Text(
                         text = "Chi tiết Tour",
                         style = TextStyle(
-                            fontSize   = 24.sp,            // tăng kích thước chữ
-                            fontWeight = FontWeight.Bold,  // in đậm
+                            fontSize   = 30.sp,
+                            fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Serif  // đổi font family
                         )
                     )
@@ -95,13 +95,13 @@ fun BookingDetailScreen(
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     // Màu nền của AppBar
-                    containerColor                = MaterialTheme.colorScheme.primary,
+                    containerColor                = Color.White,
                     // Màu chữ tiêu đề
-                    titleContentColor             = Color.White,
+                    titleContentColor             = Color.Black,
                     // Màu icon điều hướng
-                    navigationIconContentColor    = Color.White,
+                    navigationIconContentColor    = Color.Black,
                     // Màu khi content scroll (nếu dùng scrollBehavior)
-                    scrolledContainerColor        = MaterialTheme.colorScheme.primaryContainer
+                    scrolledContainerColor        = Color.Blue
                 )
             )
         },
@@ -124,7 +124,11 @@ fun BookingDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    shape = RoundedCornerShape(28.dp)
+                    shape = RoundedCornerShape(28.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black,
+                    contentColor   = Color.LightGray
+                )
                 ) {
                     if (bookingState is BookingState.Loading)
                         CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))

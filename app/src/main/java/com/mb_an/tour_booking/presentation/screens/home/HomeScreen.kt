@@ -70,7 +70,7 @@ fun HomeScreen(
             )
             Spacer(Modifier.height(16.dp))
             AsyncImage(
-                model = "https://picsum.photos/800/300",
+                model = "https://sgweb.vn/wp-content/uploads/2022/12/75b1d5aa3eb003170055303a362d1a7e.jpg",
                 contentDescription = "Banner",
                 modifier = Modifier
                     .fillMaxWidth()

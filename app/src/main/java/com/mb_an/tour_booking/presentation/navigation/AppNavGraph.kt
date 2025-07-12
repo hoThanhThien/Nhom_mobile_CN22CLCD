@@ -1,4 +1,4 @@
-// app/src/main/java/com/mb_an/tour_booking/presentation/navigation/AppNavGraph.kt
+
 package com.mb_an.tour_booking.presentation.navigation
 
 import android.os.Build
@@ -23,12 +23,14 @@ import com.mb_an.tour_booking.presentation.screens.profile.ProfileScreen
 import com.mb_an.tour_booking.presentation.screens.auth.LoginScreen
 import com.mb_an.tour_booking.presentation.screens.auth.RegisterScreen
 import com.mb_an.tour_booking.presentation.screens.auth.ForgotPasswordScreen
-import com.mb_an.tour_booking.presentation.screens.booking.BookingDetailScreen
-import com.mb_an.tour_booking.presentation.screens.splash.SplashScreen
+
+import com.mb_an.tour_booking.presentation.screens.payment.PaymentScreen
+
 import com.mb_an.tour_booking.presentation.viewmodel.AuthViewModel
 import com.mb_an.tour_booking.presentation.viewmodel.HomeViewModel
 import com.mb_an.tour_booking.presentation.viewmodel.BookingViewModel
-
+import java.time.LocalDate
+import com.mb_an.tour_booking.R
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -151,7 +153,7 @@ fun AppNavGraph() {
                                 navController.navigate(Screen.Login)
                             } else {
                                 // gọi use-case bookTour với start/end/guests
-                                bookingVm.bookTour(tour, startDate, endDate, guests)
+                                navController.navigate("payment/${tour.id}/${startDate}/${endDate}/${guests}")
                             }
                         },
 
@@ -181,6 +183,49 @@ fun AppNavGraph() {
                     }
                 }
             }
+            // 6. PaymentScreen
+            composable(
+                route = "payment/{tourId}/{start}/{end}/{guests}",
+                arguments = listOf(
+                    navArgument("tourId") { type = NavType.StringType },
+                    navArgument("start")  { type = NavType.StringType },
+                    navArgument("end")    { type = NavType.StringType },
+                    navArgument("guests"){ type = NavType.IntType }
+                )
+            ) { back ->
+                val tourId = back.arguments!!.getString("tourId")!!
+                val start  = back.arguments!!.getString("start")!!
+                val end    = back.arguments!!.getString("end")!!
+                val guests = back.arguments!!.getInt("guests")
+
+                // Lấy ViewModel
+                val homeEntry = remember(navController) {
+                    navController.getBackStackEntry(BottomNavItem.Home.route)
+                }
+                val homeVm   : HomeViewModel       = getViewModel(viewModelStoreOwner = homeEntry)
+                val bookingVm: BookingViewModel = getViewModel()
+
+                PaymentScreen(
+                    qrResId = R.drawable.my_qr,  // dán file QR drawable/my_qr.png
+                    onPaid = {
+                        // sau khi thanh toán, gọi bookTour
+                        val tour = homeVm.tourList.first { it.id == tourId }
+                        bookingVm.bookTour(
+                            tour,
+                            LocalDate.parse(start),
+                            LocalDate.parse(end),
+                            guests
+                        )
+                        // rồi chuyển sang tab Bookings
+                        navController.navigate(BottomNavItem.Bookings.route) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
         }
     }
 }
+
+
+
