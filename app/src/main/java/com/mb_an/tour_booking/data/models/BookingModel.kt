@@ -7,12 +7,12 @@ data class BookingModel(
     val userId: String       = "",
     val tourId: String       = "",
     val tourTitle: String    = "",
-    val date: String         = "",          // như trước
+    val date: String         = "",
     val timestamp: Timestamp?= null,
 
     val tour: TourModel   = TourModel(),
     val nights: Int          = 0,
     val quantity: Int        = 0,
     val totalPrice: Int      = 0,
-    val status: String       = ""           // "Hoàn tất" hoặc "Đang chờ"
+    val status: String       = ""
 )

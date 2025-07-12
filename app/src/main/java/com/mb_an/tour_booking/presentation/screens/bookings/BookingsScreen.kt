@@ -38,109 +38,109 @@ fun BookingsScreen(
             ) {
                 Text("Bạn chưa có đơn đặt nào", color = Color.Gray)
             }
-        } else {
-            LazyColumn(
-                contentPadding      = paddingValues,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier            = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                items(bookings) { booking ->
-                    Card(
-                        shape     = RoundedCornerShape(12.dp),
-                        modifier  = Modifier.fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-                            // 1. Ảnh Tour
-                            AsyncImage(
-                                model             = booking.tour.imageUrl,
-                                contentDescription= booking.tour.title,
-                                modifier          = Modifier
-                                    .fillMaxWidth()
-                                    .height(180.dp)
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentScale      = ContentScale.Crop
-                            )
+        } else { LazyColumn(
+            contentPadding      = paddingValues,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier            = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            items(bookings) { booking ->
+                Card(
+                    shape     = RoundedCornerShape(12.dp),
+                    modifier  = Modifier.fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        // 1. Ảnh Tour
+                        AsyncImage(
+                            model             = booking.tour.imageUrl,
+                            contentDescription= booking.tour.title,
+                            modifier          = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale      = ContentScale.Crop
+                        )
 
-                            Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(8.dp))
 
-                            // 2. Tiêu đề Tour
+                        // 2. Tiêu đề Tour
+                        Text(
+                            text       = booking.tour.title,
+                            style      = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Spacer(Modifier.height(4.dp))
+
+                        // 3. Ngày & số đêm
+                        Text(
+                            text  = "Ngày: ${booking.date}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            text  = "Số đêm: ${booking.nights}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+
+                        Spacer(Modifier.height(4.dp))
+
+                        // 4. Số khách
+                        Text(
+                            text  = "Số lượng: ${booking.quantity}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+
+                        Spacer(Modifier.height(4.dp))
+
+                        // 5. Trạng thái
+                        Text(
+                            text  = "Trạng thái: ${booking.status}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (booking.status == "Hoàn tất")
+                                Color(0xFF4CAF50)
+                            else
+                                Color(0xFFFFA000)
+                        )
+
+                        Spacer(Modifier.height(8.dp))
+
+                        // 6. Tổng tiền
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Tổng: ", fontWeight = FontWeight.SemiBold)
                             Text(
-                                text       = booking.tour.title,
-                                style      = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.SemiBold
+                                text       = "${booking.totalPrice} ₫",
+                                color      = Color(0xFFD32F2F),
+                                fontWeight = FontWeight.Bold
                             )
+                        }
 
-                            Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(12.dp))
 
-                            // 3. Ngày & số đêm
-                            Text(
-                                text  = "Ngày: ${booking.date}",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text  = "Số đêm: ${booking.nights}",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-
-                            Spacer(Modifier.height(4.dp))
-
-                            // 4. Số khách
-                            Text(
-                                text  = "Số lượng: ${booking.quantity}",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-
-                            Spacer(Modifier.height(4.dp))
-
-                            // 5. Trạng thái
-                            Text(
-                                text  = "Trạng thái: ${booking.status}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = if (booking.status == "Hoàn tất")
-                                    Color(0xFF4CAF50)
-                                else
-                                    Color(0xFFFFA000)
-                            )
-
-                            Spacer(Modifier.height(8.dp))
-
-                            // 6. Tổng tiền
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("Tổng: ", fontWeight = FontWeight.SemiBold)
-                                Text(
-                                    text       = "${booking.totalPrice} ₫",
-                                    color      = Color(0xFFD32F2F),
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-
-                            Spacer(Modifier.height(12.dp))
-
-                            // 7. Chi tiết & Hủy
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                modifier              = Modifier.fillMaxWidth()
+                        // 7. Chi tiết & Hủy
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier              = Modifier.fillMaxWidth()
+                        ) {
+                            Button(
+                                onClick  = { onViewDetail(booking) },
+                                modifier = Modifier.weight(1f)
                             ) {
-                                Button(
-                                    onClick  = { onViewDetail(booking) },
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text("Chi tiết Tour")
-                                }
-                                OutlinedButton(
-                                    onClick  = { onCancel(booking) },
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text("Hủy đặt")
-                                }
+                                Text("Chi tiết Tour")
+                            }
+                            OutlinedButton(
+                                onClick  = { onCancel(booking) },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Hủy đặt")
                             }
                         }
                     }
                 }
             }
         }
+        }
     }
 }
+
