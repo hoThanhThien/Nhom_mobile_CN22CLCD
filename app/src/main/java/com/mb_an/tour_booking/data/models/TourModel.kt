@@ -10,7 +10,8 @@ data class TourModel(
     val description: String = "",
     val rating: Double = 0.0,
     val images: List<String> = emptyList(),
-    val reviewCount: Int      = 0
+    val reviewCount: Int      = 0,
+    val bannerUrls: List<String> = emptyList(),
 )
 {
     // helper trả về list ảnh để slider dùng

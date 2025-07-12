@@ -10,7 +10,6 @@ data class BookingModel(
     val date: String         = "",          // như trước
     val timestamp: Timestamp?= null,
 
-
     val tour: TourModel   = TourModel(),
     val nights: Int          = 0,
     val quantity: Int        = 0,

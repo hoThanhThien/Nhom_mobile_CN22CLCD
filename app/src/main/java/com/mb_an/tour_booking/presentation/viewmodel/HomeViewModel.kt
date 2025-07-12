@@ -24,6 +24,10 @@ class HomeViewModel(
         else tourList.filter {
             it.title.contains(query, ignoreCase = true)
         }
+    // Lấy banner URL từ tour đầu tiên, nếu có
+    val bannerUrls: List<String>
+        get() = tourList.firstOrNull()?.bannerUrls ?: emptyList()
+
     // Categories
     var categories by mutableStateOf<List<CategoryModel>>(emptyList())
         private set

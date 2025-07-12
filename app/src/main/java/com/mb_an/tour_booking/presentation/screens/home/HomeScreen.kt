@@ -1,4 +1,4 @@
-// app/src/main/java/com/mb_an/tour_booking/presentation/screens/home/HomeScreen.kt
+
 package com.mb_an.tour_booking.presentation.screens.home
 
 import androidx.compose.foundation.clickable
@@ -29,12 +29,19 @@ import com.mb_an.tour_booking.data.models.TourModel
 import com.mb_an.tour_booking.data.models.CategoryModel
 import com.mb_an.tour_booking.presentation.viewmodel.HomeViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-// Data class cho Category (nếu vẫn dùng)
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.delay
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
 fun HomeScreen(
+    bannerUrls: List<String>,
     categories: List<CategoryModel>,
     tours:      List<TourModel>,
     onCategoryClick: (CategoryModel) -> Unit,
@@ -69,16 +76,62 @@ fun HomeScreen(
                 shape         = RoundedCornerShape(28.dp)
             )
             Spacer(Modifier.height(16.dp))
-            AsyncImage(
-                model = "https://sgweb.vn/wp-content/uploads/2022/12/75b1d5aa3eb003170055303a362d1a7e.jpg",
-                contentDescription = "Banner",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
+            if (bannerUrls.isNotEmpty()) {
+                // 1. Tạo state cho pager
+                val pagerState = rememberPagerState()
+
+                // 2. (Tuỳ chọn) Auto-scroll
+                LaunchedEffect(pagerState) {
+                    while (true) {
+                        delay(3000)
+                        val next = (pagerState.currentPage + 1) % bannerUrls.size
+                        pagerState.animateScrollToPage(next)
+                    }
+                }
+
+                // 3. Vẽ carousel
+                Card(
+                    modifier  = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+                    shape     = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(6.dp)
+                ) {
+                    Box {
+                        HorizontalPager(
+                            count    = bannerUrls.size,
+                            state    = pagerState,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page ->
+                            AsyncImage(
+                                model             = bannerUrls[page],
+                                contentDescription= null,
+                                modifier          = Modifier.fillMaxSize(),
+                                contentScale      = ContentScale.Crop
+                            )
+                        }
+                        HorizontalPagerIndicator(
+                            pagerState = pagerState,
+                            modifier   = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(8.dp)
+                        )
+                    }
+                }
+            } else {
+                // fallback nếu không có bannerUrls
+                AsyncImage(
+                    model            = "https://sgweb.vn/wp-content/uploads/2022/12/75b1d5aa3eb003170055303a362d1a7e.jpg",
+                    contentDescription= "Banner",
+                    modifier         = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale     = ContentScale.Crop
+                )
+            }
         }
+
 
         // 2. Danh mục (Categories)
         item {

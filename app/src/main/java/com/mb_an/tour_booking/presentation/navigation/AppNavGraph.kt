@@ -52,6 +52,7 @@ fun AppNavGraph() {
             composable(BottomNavItem.Home.route) {
                 val homeVm: HomeViewModel = getViewModel()
                 HomeScreen(
+                    bannerUrls       = homeVm.bannerUrls,
                     categories      = homeVm.categories,
                     tours           = homeVm.tourList,
                     onCategoryClick = { /*…*/ },

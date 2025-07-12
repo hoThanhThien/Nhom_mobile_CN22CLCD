@@ -9,18 +9,7 @@ class TourRepository {
     private val firestore = FirebaseFirestore.getInstance()
     private val tourCollection = firestore.collection("tours")
 
-//    fun fetchTours(onResult: (List<TourModel>) -> Unit) {
-//        tourCollection.get()
-//            .addOnSuccessListener { snapshot ->
-//                val tours = snapshot.documents.mapNotNull {
-//                    it.toObject(TourModel::class.java)
-//                }
-//                onResult(tours) // ✅ đảm bảo trả về List<TourModel>
-//            }
-//            .addOnFailureListener {
-//                onResult(emptyList()) // ✅ trả về List rỗng khi lỗi
-//            }
-//    }
+
 fun fetchTours(onResult: (List<TourModel>) -> Unit) {
     tourCollection.get()
         .addOnSuccessListener { snapshot ->
