@@ -4,6 +4,7 @@ import com.mb_an.tour_booking.data.models.TourModel
 import com.mb_an.tour_booking.presentation.viewmodel.BookingState
 
 import android.os.Build
+
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,9 +39,12 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+
 import java.util.Locale as JavaLocale
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -54,6 +58,7 @@ fun BookingDetailScreen(
     onBookingError: (String) -> Unit,
     onResetState: () -> Unit
 ) {
+    val context = LocalContext.current
     val dateState = rememberDateRangePickerState()
     var showDateDialog by remember { mutableStateOf(false) }
     var startDate by remember { mutableStateOf<LocalDate?>(null) }
@@ -104,9 +109,18 @@ fun BookingDetailScreen(
             Column(Modifier.padding(16.dp)) {
                 Button(
                     onClick = {
-                        if (nights > 0 && startDate != null && endDate != null)
+                        if (nights > 0 && startDate != null && endDate != null){
                             onBook(startDate!!, endDate!!, guests)
-                    },
+                    }else {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Vui lòng chọn ngày bắt đầu và kết thúc",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+
+                }},
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),

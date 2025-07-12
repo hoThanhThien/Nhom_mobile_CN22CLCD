@@ -1,6 +1,7 @@
 // app/src/main/java/com/mb_an/tour_booking/presentation/viewmodel/BookingViewModel.kt
 package com.mb_an.tour_booking.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,14 +25,16 @@ class BookingViewModel(
     var bookingState by mutableStateOf<BookingState>(BookingState.Idle)
         private set
 
-    init {
-        loadBookings()
-    }
+//    init {
+//        loadBookings()
+//    }
 
     /** Nạp lại danh sách booking */
     fun loadBookings() {
         val userId = authRepository.getCurrentUserId() ?: return
+        Log.d("BookingVM", "loadBookings userId=$userId")
         repository.fetchUserBookings(userId) { list ->
+            Log.d("BookingVM", "  callback list.size=${list.size}")
             bookingList = list
         }
     }
